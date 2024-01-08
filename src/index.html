@@ -2,10 +2,12 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Hello!</title>
+    <title>Todo list!</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
   </head>
   <body>
-    <h1>Hello!</h1>
-    <p>Hi from Rust</p>
+    <h1> Todo list </h1> 
+    <p id="content"> this is where stuff goes</p>
+    <button hx-post="/test" hx-swap = "outerHTML" hx-target="#content">click me! </button>
   </body>
 </html>
