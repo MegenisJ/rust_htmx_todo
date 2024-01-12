@@ -1,11 +1,12 @@
 mod task;
-use std::fs;
+use std::{fs, string};
 use actix_web::{get, post, web, App,HttpRequest, HttpResponse, HttpServer, Responder};
-use libsql_client::{Client, Config, Value};
+use libsql_client::{Client, Config, Value,Row};
 use std::sync::Arc;
 use task::TodoForm;
 use task::{Todo, TodoItem};
 use leptos::*;
+
 
 #[derive(Clone)]
 struct AppState {
@@ -21,10 +22,7 @@ async fn hello(_req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
         .iter()
         .filter_map(|x| TodoItem::try_from(x.clone()).ok())
         .collect::<Vec<_>>();
-    let x = todos.iter().next().unwrap();
     println!("todos: {:?}", todos);
-    println!("{}", x.extras); 
-    //let index = fs::read_to_string("src/index.html").unwrap();
      
     let html = leptos::ssr::render_to_string(move |cx| {
         view! { cx,
@@ -75,17 +73,27 @@ fn get_url() -> String {
     return format!("file://{}", file);
 }
 async fn get_count(client: Arc<Client>) -> std::io::Result<usize> {
-    let count = client.execute("SELECT COUNT(*) FROM todos").await.unwrap();
-    let count = count
+    let result_set = client.execute("SELECT * FROM todos").await.unwrap();
+
+    let count = result_set
         .rows
         .first()
         .map(|row| &row.values[0])
         .unwrap_or(&Value::Integer { value: 0 });
+
     let count = match count {
         Value::Integer { value: i } => *i,
         _ => 0,
     };
 
+    if count > 0 {
+        let row = &result_set.rows[0]; // ResultSet returns array of Rows
+        //let num : usize = row.try_column("completed").unwrap();
+        let text : &str = row.try_column("title").unwrap();
+        let text : &str = row.try_column("detail").unwrap();
+        let text : usize = row.try_column("completed").unwrap();
+        println!("{text}");
+    }
     return Ok(count as usize);
 }
 #[actix_web::main]
