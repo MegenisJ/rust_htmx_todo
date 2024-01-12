@@ -1,4 +1,7 @@
 mod task;
+mod todo;
+mod appState;
+
 use std::{fs, string};
 use actix_web::{get, post, web, App,HttpRequest, HttpResponse, HttpServer, Responder};
 use libsql_client::{Client, Config, Value,Row};
@@ -7,11 +10,6 @@ use task::TodoForm;
 use task::{Todo, TodoItem};
 use leptos::*;
 
-
-#[derive(Clone)]
-struct AppState {
-    client: Arc<Client>,
-}
 
 #[get("/")]
 async fn hello(_req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
@@ -48,7 +46,7 @@ async fn hello(_req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
 async fn test(data: web::Data<AppState>) -> impl Responder {
     let what_comes_back = data
         .client
-        .execute("INSERT INTO todos (title,detail) VALUES ('So something','a bit of extra detail') RETURNING id")
+        .execute("INSERT INTO todos (title,detail,completed) VALUES ('So something','a bit of extra detail', 0) RETURNING id")
         .await
         .unwrap();
 
@@ -56,11 +54,6 @@ async fn test(data: web::Data<AppState>) -> impl Responder {
     HttpResponse::Ok()
         .content_type("text/html; charset=utf-8")
         .body(index)
-}
-
-#[post("/echo")]
-async fn echo(req_body: String) -> impl Responder {
-    HttpResponse::Ok().body(req_body)
 }
 
 fn get_url() -> String {
@@ -88,14 +81,14 @@ async fn get_count(client: Arc<Client>) -> std::io::Result<usize> {
 
     if count > 0 {
         let row = &result_set.rows[0]; // ResultSet returns array of Rows
-        //let num : usize = row.try_column("completed").unwrap();
         let text : &str = row.try_column("title").unwrap();
-        let text : &str = row.try_column("detail").unwrap();
-        let text : usize = row.try_column("completed").unwrap();
-        println!("{text}");
+        let detail : &str = row.try_column("detail").unwrap();
+        let completed : usize = row.try_column("completed").unwrap();
+        println!("{text}{detail}{completed}");
     }
     return Ok(count as usize);
 }
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
 

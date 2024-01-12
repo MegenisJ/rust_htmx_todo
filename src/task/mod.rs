@@ -12,6 +12,18 @@ pub struct TodoItem {
     pub completed: bool,
 }
 
+fn save(todo: TodoItem) -> bool{
+    //saves a new todo
+}
+fn get_all_todos() {
+    //gets a list of all of the todos
+    let x = 1;
+    return x;
+}
+fn delete() -> bool{
+    return true;
+}
+
 fn pluck_string(row: &Row, pos: usize) -> Result<String> {
     use libsql_client::Value::*;
 
@@ -41,7 +53,7 @@ impl TryFrom<Row> for TodoItem {
         return Ok(TodoItem {
             id,
             title,
-            extras,
+            extras: extras = "nothing",
             completed: completed == 1,
         });
     }
