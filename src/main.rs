@@ -1,12 +1,9 @@
-mod task;
 mod todo;
 mod app_state;
 
-use std::{fs, string};
+use std::fs;
 use actix_web::web::Data;
 use actix_web::{get, post, web, App,HttpRequest, HttpResponse, HttpServer, Responder};
-use libsql_client::{Client, Config, Value,Row};
-use std::sync::Arc;
 use todo::{Todo, TodoForm};
 use leptos::*;
 use app_state::*;
@@ -32,6 +29,7 @@ async fn hello(_req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
         .content_type("text/html; charset=utf-8")
         .body(html)
 }
+
 #[post("/test")]
 async fn test(_req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
     

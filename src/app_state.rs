@@ -1,7 +1,7 @@
 use crate::todo::*;
 use std::sync::Arc;
-use libsql_client::{Client, Config, Value,Row};
-use actix_web::{get, post, web, App,HttpRequest, HttpResponse, HttpServer, Responder};
+use libsql_client::{Client, Config, Value};
+use actix_web::web;
 
 #[derive(Clone)]
 pub struct AppState {
