@@ -11,54 +11,6 @@ pub struct TodoItem {
     pub extras: String,
     pub completed: bool,
 }
-
-fn save(todo: TodoItem) -> bool{
-    //saves a new todo
-}
-fn get_all_todos() {
-    //gets a list of all of the todos
-    let x = 1;
-    return x;
-}
-fn delete() -> bool{
-    return true;
-}
-
-fn pluck_string(row: &Row, pos: usize) -> Result<String> {
-    use libsql_client::Value::*;
-
-    return match &row.values[pos] {
-        Text { value } => Ok(value.clone()),
-        _ => Err(anyhow::anyhow!("yo dawg, this is no string")),
-    };
-}
-
-fn pluck_me_daddy_int(row: &Row, pos: usize) -> Result<usize> {
-    use libsql_client::Value::*;
-    return match row.values[pos] {
-        Integer { value } => Ok(value as usize),
-        _ => Err(anyhow::anyhow!("yo dawg, this is no integer")),
-    };
-}
-
-impl TryFrom<Row> for TodoItem {
-    type Error = anyhow::Error;
-
-    fn try_from(row: Row) -> Result<Self, Self::Error> {
-        let id = pluck_me_daddy_int(&row, 0)?;
-        let title = pluck_string(&row, 1)?;
-        let extras = pluck_string(&row, 2)?;
-        let completed = pluck_me_daddy_int(&row, 3)?;
-
-        return Ok(TodoItem {
-            id,
-            title,
-            extras: extras = "nothing",
-            completed: completed == 1,
-        });
-    }
-}
-
 #[component]
 pub fn TodoForm(cx: Scope, todos: Vec<TodoItem>, route: &'static str) -> impl IntoView {
     // create user interfaces with the declarative `view!` macro
