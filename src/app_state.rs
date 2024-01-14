@@ -9,26 +9,19 @@ pub struct AppState {
 }
 
 impl AppState {
-    pub async fn get_all_todos(&self) -> Vec<Todo> {
+    pub async fn get_all_todos(self) -> Vec<Todo> {
 
-        let result_set = self.client.execute("SELECT * FROM todos").await.unwrap();
+        let result_set = self.client.execute("SELECT * FROM todos2").await.unwrap();
 
         let mut all_todos:Vec<Todo> = vec![];
         
-        let count = result_set
-            .rows
-            .first()
-            .map(|row| &row.values[0])
-            .unwrap_or(&Value::Integer { value: 0 });
+        let count = result_set.rows_affected;
 
-        let count = match count {
-            Value::Integer { value: i } => *i,
-            _ => 0,
-        };
         println!("total todos : {count}");
+        
         if count > 0 {
             let mut x = 0;
-            while x <= count{
+            while x < count{
 
                 let row = &result_set.rows[x as usize]; // ResultSet returns array of Rows
 
@@ -48,7 +41,8 @@ impl AppState {
         return all_todos;
     }
 /*
-    pub fn CompleteTodo(todo:Todo) -> bool
+    pub fn CompleteTodo(todo:Todo) INSERT INTO todos (title,detail,completed) VALUES ('{title}','{extras}', 0)-> bool
+
     {
 
     }
@@ -57,29 +51,42 @@ impl AppState {
     {
 
     }
-*/
-    pub async fn save_todo(&self, todo:Todo) {
+    */
+    pub async fn save_todo(self, todo:Todo) {
         println!("saving new todo {0}", todo.title);
+
         let title = todo.title;
         let extras = todo.extras;
-        let query = format!("INSERT INTO todos (title,detail,completed) VALUES ('{title}','{extras}', 0) RETURNING id");
+        let query = format!("INSERT INTO todos2 (title,detail,completed) VALUES ('{}','{}', 0)",title,extras);
+        println!("{query}");
         let x =self.client.execute(query).await.unwrap();
-        println!("{}",x.rows_affected);
-    }
-/*
-    pub fn DeleteTodo(todo:Todo) -> bool {
+         
+        let query2 = format!("select * from todos2");
 
+        let x2 =self.client.execute(query2).await.unwrap();
+        
+
+        let new_id = x2.rows[0].try_column("title").unwrap_or("something went wrong");
+        println!("{}", new_id);
+        println!("rows affected{}",x.rows_affected);
     }
-*/
+    /*
+       pub fn DeleteTodo(todo:Todo) -> bool {
+
+       }
+       */
+
+    pub async fn initialize_db(self){
+        self.client.execute("CREATE TABLE IF NOT EXISTS todos2 (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, detail TEXT, completed BOOLEAN)").await.unwrap();
+    }
 }
-
 pub async fn initialize_app_state() -> web::Data<AppState> {
 
     let config = Config::new(get_url().as_str()).unwrap();
     let client = Arc::new(libsql_client::Client::from_config(config).await.unwrap());
 
-    client.execute("CREATE TABLE IF NOT EXISTS todos (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, detail TEXT, completed BOOLEAN)").await.unwrap();
     
+    client.execute("CREATE TABLE IF NOT EXISTS todos2 (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, detail TEXT, completed BOOLEAN)").await.unwrap();
     let app = web::Data::new(AppState { client });
     return app;
 }

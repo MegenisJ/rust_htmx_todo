@@ -17,7 +17,9 @@ pub fn TodoForm(cx: Scope, todos: Vec<Todo>, route: &'static str) -> impl IntoVi
             hx-target="#todos"
             hx-swap="afterbegin"
             hx-trigger="submit">
-            <input type="text" placeholder="More like Todone, amirite?" />
+            <h3>Create a new todo item</h3>
+            <input name = "title" type="text" placeholder="Title" />
+            <input name = "extras" type="text" placeholder="Detail" />
             <button type="submit">"add me daddy"</button>
             <Todos todos=todos />
         </form>

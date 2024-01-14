@@ -2366,6 +2366,7 @@ dependencies = [
  "anyhow",
  "leptos",
  "libsql-client",
+ "serde",
 ]
 
 [[package]]

@@ -10,3 +10,4 @@ actix-web = "4"
 libsql-client = "0.31.6"
 leptos = { version = "0.4.1", features = ["ssr"] }
 anyhow = "1.0.71"
+serde = { version = "1.0.189", features = ["derive"] }
