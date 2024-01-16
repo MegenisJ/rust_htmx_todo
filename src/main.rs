@@ -5,6 +5,7 @@ use actix_web::web::Data;
 use actix_web::{get, post, web, App,HttpRequest, HttpResponse, HttpServer, Responder, web::Form};
 use todo::{Todo, TodoForm, Todos};
 use leptos::*;
+use leptos::ssr::render_to_string;
 use app_state::*;
 use serde::Deserialize;
 
@@ -33,7 +34,7 @@ async fn hello(_req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
         }
     }
 
-    let html = leptos::ssr::render_to_string(move |cx| {
+    let html = render_to_string(move |cx| {
         view! { cx,
         <head>
                 <script src="https://unpkg.com/htmx.org@1.9.2" integrity="sha384-L6OqL9pRWyyFU3+/bjdSri+iIphTN/bvYyM37tICVyOJkWZLpP2vGn6VUEXgzg6h" crossorigin="anonymous"></script>
@@ -66,17 +67,15 @@ struct NewTodo {
 
 #[post("/add")]
 async fn add(Form(form): Form<NewTodo>, data: web::Data<AppState>) -> impl Responder {
-    println!("title for the added todo {}", form.title);
     let query = format!(
         "INSERT INTO todos2 (title,detail,completed) VALUES ('{}','{}', 0)"
         ,form.title,form.extras);
 
     let _=  data.client.execute(query).await;
-    let todos = data.client.execute("select * from todos2").await.unwrap();
-    println!("Total Rows after add {}", todos.rows.len()  );
-    println!("this is the new title{}",todos.rows[0].try_column("title").unwrap_or("didn work"));
+
     let new_todo = Todo{id:1, title:form.title,extras:form.extras, completed:false};    
-    let html = leptos::ssr::render_to_string(move |cx| {
+    
+    let html = render_to_string(move |cx| {
         view! { cx,
             <Todo todo=new_todo />
         }
