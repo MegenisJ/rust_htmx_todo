@@ -20,7 +20,7 @@ pub fn TodoForm(cx: Scope, todos: Vec<Todo>, route: &'static str) -> impl IntoVi
             <h3>Create a new todo item</h3>
             <input name = "title" type="text" placeholder="Title" />
             <input name = "extras" type="text" placeholder="Detail" />
-            <button type="submit">"add me daddy"</button>
+            <button type="submit">"Add new todo"</button>
             <Todos todos=todos />
         </form>
     };
@@ -53,14 +53,17 @@ pub fn Todos(cx: Scope, todos: Vec<Todo>) -> impl IntoView {
         </ul>
     };
 }
-
+//TODO: Add mark complete /remove buttons
 #[component]
 pub fn Todo(cx: Scope, todo: Todo) -> impl IntoView {
     return view! {cx,
         <div>
-            <div>id: {todo.id}</div>
             <div>title: {todo.title}</div>
+            <div>extra detail: {todo.extras}</div>
             <div>completed: {todo.completed}</div>
+
+            <button type="submit">"Mark as complete"</button>
+            <button type="submit">"Remove"</button>
         </div>
     };
 }
