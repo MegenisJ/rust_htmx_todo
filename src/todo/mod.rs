@@ -56,14 +56,24 @@ pub fn Todos(cx: Scope, todos: Vec<Todo>) -> impl IntoView {
 //TODO: Add mark complete /remove buttons
 #[component]
 pub fn Todo(cx: Scope, todo: Todo) -> impl IntoView {
+    let id = todo.id;
     return view! {cx,
-        <div>
+        <li>
             <div>title: {todo.title}</div>
             <div>extra detail: {todo.extras}</div>
             <div>completed: {todo.completed}</div>
 
-            <button type="submit">"Mark as complete"</button>
-            <button type="submit">"Remove"</button>
-        </div>
+            <button type="submit"              
+            hx-patch="todo/status/{id}"
+            hx-target="closest li"
+            hx-swap="innerHTML"
+            >"Mark as complete"</button>
+            
+            <button type="submit"              
+            hx-delete="todo/{id}"
+            hx-target="closest li"
+            hx-swap="delete show:none"
+            >"Remove"</button>
+            </li>
     };
 }
