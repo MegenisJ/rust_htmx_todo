@@ -1,4 +1,3 @@
-use crate::todo::*;
 use std::sync::Arc;
 use libsql_client::{Client, Config};
 use actix_web::web;

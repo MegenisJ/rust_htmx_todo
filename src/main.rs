@@ -9,7 +9,6 @@ use leptos::ssr::render_to_string;
 use app_state::*;
 use serde::Deserialize;
 
-
 #[get("/")]
 async fn hello(_req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
 
@@ -74,44 +73,40 @@ async fn remove(id: web::Path<usize>, data: web::Data<AppState>) -> impl Respond
 
     let _=  data.client.execute(query).await;
    
-    let html = render_to_string(move |cx| {
-        view! { cx,
-           completed : 1 
-        }
-    });
     HttpResponse::Ok()
 }
 
 #[patch("todo/status/{id}")]
 async fn complete( id: web::Path<usize>, data: web::Data<AppState>) -> impl Responder {
     println!("recieved complete request");
+    
     let id = id.into_inner();
     let query = format!(
         "update todos2 set completed = 1 WHERE id = '{}'"
         ,id);
 
     let _=  data.client.execute(query).await;
-     
+
     let query = format!(
         "select * from todos2 WHERE id = '{}'"
         ,id);
 
     let result_set = data.client.execute(query).await.unwrap();
-
-
-
-    let row = &result_set.rows[0]; // ResultSet returns array of Rows
+    let row = &result_set.rows[0]; 
+   
     let todo = Todo{
         id :  row.try_column("id").unwrap(),
         title :  row.try_column::<&str>("title").unwrap().to_string(),
         extras :  row.try_column::<&str>("detail").unwrap().to_string(),
         completed : row.try_column("completed").unwrap_or(0) == 1,
     };
+
     let html = render_to_string(move |cx| {
         view! { cx,
         <Todo todo=todo/>
         }
     });
+   
     HttpResponse::Ok()
         .content_type("text/html; charset=utf-8")
         .body(html)
@@ -176,7 +171,6 @@ async fn main() -> std::io::Result<()> {
             .service(complete)
     })
     .bind(("127.0.0.1", 8080))?
-
     .run()
     .await
 }
