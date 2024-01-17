@@ -1,6 +1,5 @@
 use leptos::*;
 
-
 #[derive(Debug, Clone)]
 pub struct Todo {
     pub id: usize,
@@ -53,7 +52,6 @@ pub fn Todos(cx: Scope, todos: Vec<Todo>) -> impl IntoView {
         </ul>
     };
 }
-//TODO: Add mark complete /remove buttons
 #[component]
 pub fn Todo(cx: Scope, todo: Todo) -> impl IntoView {
     let id = todo.id;
