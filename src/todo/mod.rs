@@ -15,7 +15,8 @@ pub fn TodoForm(cx: Scope, todos: Vec<Todo>, route: &'static str) -> impl IntoVi
         <form hx-post="{route}"
             hx-target="#todos"
             hx-swap="afterbegin"
-            hx-trigger="submit">
+            hx-trigger="submit"
+            class = "container mx-auto px-4 justify-items-center flex flex-col" >
             <h3>Create a new todo item</h3>
             <input name = "title" type="text" placeholder="Title" />
             <input name = "extras" type="text" placeholder="Detail" />
@@ -56,7 +57,7 @@ pub fn Todos(cx: Scope, todos: Vec<Todo>) -> impl IntoView {
 pub fn Todo(cx: Scope, todo: Todo) -> impl IntoView {
     let id = todo.id;
     return view! {cx,
-        <li>
+        <li class = "flex flex-col justify-center items-center bg-indigo-500 border rounded-lg">
             <div>title: {todo.title}</div>
             <div>extra detail: {todo.extras}</div>
             <div>completed: {todo.completed}</div>
@@ -65,13 +66,15 @@ pub fn Todo(cx: Scope, todo: Todo) -> impl IntoView {
             hx-patch="todo/status/{id}"
             hx-target="closest li"
             hx-swap="innerHTML"
+            class = "border rounded bg-violet-500 hover:bg-violet-600"
             >"Mark as complete"</button>
             
             <button type="submit"              
             hx-delete="todo/{id}"
             hx-target="closest li"
-            hx-swap="delete show:none"
+            hx-swap="delete outerHTML"
+            class = "border rounded bg-red-500 hover:bg-red-600"
             >"Remove"</button>
-            </li>
+        </li>
     };
 }

@@ -37,6 +37,7 @@ async fn hello(_req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
         view! { cx,
         <head>
                 <script src="https://unpkg.com/htmx.org@1.9.2" integrity="sha384-L6OqL9pRWyyFU3+/bjdSri+iIphTN/bvYyM37tICVyOJkWZLpP2vGn6VUEXgzg6h" crossorigin="anonymous"></script>
+                <script src="https://cdn.tailwindcss.com"></script>
             </head>
             <body>
                 <TodoForm
@@ -115,13 +116,13 @@ async fn complete( id: web::Path<usize>, data: web::Data<AppState>) -> impl Resp
 #[post("/add")]
 async fn add(Form(form): Form<NewTodo>, data: web::Data<AppState>) -> impl Responder {
     let query = format!(
-        "INSERT INTO todos2 (title,detail,completed) VALUES ('{}','{}', 0)"
+        "INSERT INTO todos2 (title,detail,completed) VALUES ('{}','{}', 0) RETURNING id"
         ,form.title,form.extras);
 
-    let _=  data.client.execute(query).await;
-
+    let response =  data.client.execute(query).await;
+    let x = response.unwrap().rows[0].try_column("id").unwrap();
     let new_todo = Todo{
-        id:1,
+        id: x,
         title:form.title,
         extras:form.extras,
         completed:false
@@ -174,3 +175,4 @@ async fn main() -> std::io::Result<()> {
     .run()
     .await
 }
+
