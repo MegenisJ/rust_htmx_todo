@@ -1,4 +1,5 @@
 use leptos::*;
+use serde::Deserialize;
 
 #[derive(Debug, Clone)]
 pub struct Todo {
@@ -6,6 +7,12 @@ pub struct Todo {
     pub title: String,
     pub extras: String,
     pub completed: bool,
+}
+
+#[derive(Deserialize)]
+pub struct NewTodo {
+    pub title: String,
+    pub extras: String
 }
 
 #[component]

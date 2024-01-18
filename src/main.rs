@@ -3,11 +3,10 @@ mod app_state;
 
 use actix_web::web::Data;
 use actix_web::{get, post,delete,patch, web, App,HttpRequest, HttpResponse, HttpServer, Responder, web::Form};
-use todo::{Todo, TodoForm, Todos};
+use todo::{Todo, TodoForm, Todos, NewTodo};
 use leptos::*;
 use leptos::ssr::render_to_string;
 use app_state::*;
-use serde::Deserialize;
 
 #[get("/")]
 async fn hello(_req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
@@ -47,7 +46,8 @@ async fn hello(_req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
                 <button 
                     hx-post = "/removeall"
                     hx-target="#todos"
-                    hx-swap="innerHTML">
+                    hx-swap="innerHTML"
+                    class = "bg-red-500 hover:bg-red-600">
                         Get rid of em all 
                 </button>
 
@@ -57,12 +57,6 @@ async fn hello(_req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
     HttpResponse::Ok()
         .content_type("text/html; charset=utf-8")
         .body(html)
-}
-
-#[derive(Deserialize)]
-struct NewTodo {
-    title: String,
-    extras: String
 }
 
 #[delete("todo/{id}")]
