@@ -28,8 +28,8 @@ pub fn TodoForm(cx: Scope, todos: Vec<Todo>, route: &'static str) -> impl IntoVi
                 <input name = "title" type="text" placeholder="Title" />
                 <input name = "extras" type="text" placeholder="Detail" />
                 <button type="submit">"Add new todo"</button>
-                <Todos todos=todos />
             </form>
+            <Todos todos=todos />
     };
 }
 
@@ -64,9 +64,9 @@ pub fn Todos(cx: Scope, todos: Vec<Todo>) -> impl IntoView {
 pub fn Todo(cx: Scope, todo: Todo) -> impl IntoView {
     let id = todo.id;
     return view! {cx,
-        <li class = "mx-auto mt-10 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 border-t border-gray-200 pt-10 sm:mt-16 sm:pt-16 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-            <div>title: {todo.title}</div>
-            <div>extra detail: {todo.extras}</div>
+        <li class = "flex justify-between gap-x-6 py-5">
+            <p class="text-sm font-semibold leading-6 text-gray-900">{todo.title}</p>
+            <p class="mt-1 truncate text-xs leading-5 text-gray-500">{todo.extras}</p>
             <div>completed: {todo.completed}</div>
 
             <button type="submit"              
