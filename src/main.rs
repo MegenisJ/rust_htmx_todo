@@ -9,7 +9,7 @@ use leptos::ssr::render_to_string;
 use app_state::*;
 
 #[get("/")]
-async fn hello(_req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
+async fn index(_req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
 
     let result_set = data.client.execute("SELECT * FROM todos2").await.unwrap();
     
@@ -54,6 +54,7 @@ async fn hello(_req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
             </body>
         }
     });
+
     HttpResponse::Ok()
         .content_type("text/html; charset=utf-8")
         .body(html)
@@ -62,11 +63,12 @@ async fn hello(_req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
 #[delete("todo/{id}")]
 async fn remove(id: web::Path<usize>, data: web::Data<AppState>) -> impl Responder {
     println!("recieved remove request");
+    
     let query = format!(
         "DELETE FROM todos2 WHERE id = '{}'"
         ,id.into_inner());
 
-    let _=  data.client.execute(query).await;
+    let _ = data.client.execute(query).await;
    
     HttpResponse::Ok()
 }
@@ -153,7 +155,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .app_data(app_state.clone())
-            .service(hello)
+            .service(index)
             .service(add)
             .service(remove_all)
             .service(remove)
