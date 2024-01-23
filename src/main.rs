@@ -77,16 +77,11 @@ async fn complete( id: web::Path<usize>, data: web::Data<AppState>) -> impl Resp
     
     let id = id.into_inner();
     let query = format!(
-        "update todos2 set completed = 1 WHERE id = '{}'"
+        "update todos2 set completed = NOT completed WHERE id = '{}' RETURNING id,title,detail,completed"
         ,id);
 
-    let _=  data.client.execute(query).await;
+    let result_set=  data.client.execute(query).await.unwrap();
 
-    let query = format!(
-        "select * from todos2 WHERE id = '{}'"
-        ,id);
-
-    let result_set = data.client.execute(query).await.unwrap();
     let row = &result_set.rows[0]; 
    
     let todo = Todo{
@@ -106,7 +101,6 @@ async fn complete( id: web::Path<usize>, data: web::Data<AppState>) -> impl Resp
         .content_type("text/html; charset=utf-8")
         .body(html)
 }
-
 #[post("/add")]
 async fn add(Form(form): Form<NewTodo>, data: web::Data<AppState>) -> impl Responder {
     let query = format!(

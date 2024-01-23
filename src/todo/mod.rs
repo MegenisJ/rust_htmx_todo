@@ -64,24 +64,47 @@ pub fn Todos(cx: Scope, todos: Vec<Todo>) -> impl IntoView {
 pub fn Todo(cx: Scope, todo: Todo) -> impl IntoView {
     let id = todo.id;
     return view! {cx,
-        <li class = "flex justify-between gap-x-6 py-5">
-            <p class="text-sm font-semibold leading-6 text-gray-900">{todo.title}</p>
-            <p class="mt-1 truncate text-xs leading-5 text-gray-500">{todo.extras}</p>
-            <div>completed: {todo.completed}</div>
-
-            <button type="submit"              
-            hx-patch="todo/status/{id}"
-            hx-target="closest li"
-            hx-swap="innerHTML"
-            class = "border rounded bg-violet-500 hover:bg-violet-600"
-            >"Mark as complete"</button>
+        <li class = "flex justify-between gap-1-6 py-2">
+            <p class="text-sm font-semibold leading-6 text-gray-900">{todo.title.clone()}</p>
+            <p class="mt-1 truncate text-xs leading-5 text-gray-500">{todo.extras.clone()}</p>
+            
+            <CompletedCheckbox todo=todo/>
             
             <button type="submit"              
             hx-delete="todo/{id}"
             hx-target="closest li"
             hx-swap="delete outerHTML"
-            class = "border rounded bg-red-500 hover:bg-red-600"
+            class = "border rounded bg-gray-100 hover:bg-gray-200"
             >"Remove"</button>
         </li>
     };
 }
+
+#[component]
+pub fn CompletedCheckbox(cx: Scope, todo: Todo) -> impl IntoView {
+
+    let id = todo.id;
+    if todo.completed {
+
+        return view! {cx,
+            <input 
+                value="completed" 
+                type="checkbox" 
+                hx-patch="/todo/status/{id}" 
+                hx-trigger="click"
+                checked 
+            /> 
+        };
+
+    }
+
+    return view! {cx,
+            <input 
+                value="completed" 
+                type="checkbox" 
+                hx-patch="/todo/status/{id}" 
+                hx-trigger="click"
+            /> 
+    };
+}
+
