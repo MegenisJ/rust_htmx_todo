@@ -34,7 +34,7 @@ async fn index(_req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
 
     let html = render_to_string(move |cx| {
         view! { cx,
-        <head>
+            <head>
                 <script src="https://unpkg.com/htmx.org@1.9.2" integrity="sha384-L6OqL9pRWyyFU3+/bjdSri+iIphTN/bvYyM37tICVyOJkWZLpP2vGn6VUEXgzg6h" crossorigin="anonymous"></script>
                 <script src="https://cdn.tailwindcss.com"></script>
             </head>

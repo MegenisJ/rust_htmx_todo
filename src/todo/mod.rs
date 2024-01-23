@@ -64,7 +64,7 @@ pub fn Todos(cx: Scope, todos: Vec<Todo>) -> impl IntoView {
 pub fn Todo(cx: Scope, todo: Todo) -> impl IntoView {
     let id = todo.id;
     return view! {cx,
-        <li class = "flex justify-between gap-1-6 py-2">
+        <li class = "flex max-w-xl flex-col items-start justify-between border rounded ">
             <p class="text-sm font-semibold leading-6 text-gray-900">{todo.title.clone()}</p>
             <p class="mt-1 truncate text-xs leading-5 text-gray-500">{todo.extras.clone()}</p>
             
