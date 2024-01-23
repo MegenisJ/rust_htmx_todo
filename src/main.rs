@@ -72,7 +72,7 @@ async fn remove(id: web::Path<usize>, data: web::Data<AppState>) -> impl Respond
 }
 
 #[patch("todo/status/{id}")]
-async fn complete( id: web::Path<usize>, data: web::Data<AppState>) -> impl Responder {
+async fn update_status( id: web::Path<usize>, data: web::Data<AppState>) -> impl Responder {
     println!("recieved complete request");
     
     let id = id.into_inner();
@@ -157,7 +157,7 @@ async fn main() -> std::io::Result<()> {
             .service(add)
             .service(remove_all)
             .service(remove)
-            .service(complete)
+            .service(update_status)
     })
     .bind(("127.0.0.1", 8080))?
     .run()
