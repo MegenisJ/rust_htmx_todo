@@ -23,11 +23,20 @@ pub fn TodoForm(cx: Scope, todos: Vec<Todo>, route: &'static str) -> impl IntoVi
                 hx-target="#todos"
                 hx-swap="afterbegin"
                 hx-trigger="submit"
-                class = "mx-auto mt-10 grid max-w-2xl gap-x-4 gap-y-4 border-t border-gray-200 pt-10 sm:mt-16 sm:pt-16 lg:mx-0 lg:max-w-none lg:grid-cols-4" >
+                class = "p-8 w-auto mx-auto bg-white rounded-xl shadow-lg flex items-center space-x-8" >
                 <h3>Create a new todo item</h3>
-                <input name = "title" type="text" placeholder="Title" />
-                <input name = "extras" type="text" placeholder="Detail" />
-                <button type="submit">"Add new todo"</button>
+                <input name = "title" type="text" placeholder="Title" class = "border rounded"/>
+                <input name = "extras" type="text" placeholder="Detail" class = "border rounded"/>
+                <button type="submit" class = "border rounded bg-gray-100 hover:bg-gray-200 w-auto">"Add new todo"</button>
+
+                <button 
+                    hx-post = "/removeall"
+                    hx-target="#todos"
+                    hx-swap="innerHTML"
+                    class = "bg-red-500 hover:bg-red-600 border rounded w-auto">
+                        Remove all 
+                </button>
+            
             </form>
             <Todos todos=todos />
     };
@@ -39,7 +48,7 @@ pub fn Todos(cx: Scope, todos: Vec<Todo>) -> impl IntoView {
 
     // create user interfaces with the declarative `view!` macro
     return view! { cx,
-        <ul id="todos">
+        <ul id="todos" class = "flex justify-items-center mx-auto">
             <For
 
                 // a function that returns the items we're iterating over; a signal is fine
@@ -64,18 +73,23 @@ pub fn Todos(cx: Scope, todos: Vec<Todo>) -> impl IntoView {
 pub fn Todo(cx: Scope, todo: Todo) -> impl IntoView {
     let id = todo.id;
     return view! {cx,
-        <li class = "flex max-w-xl flex-col items-start justify-between border rounded ">
-            <p class="text-sm font-semibold leading-6 text-gray-900">{todo.title.clone()}</p>
-            <p class="mt-1 truncate text-xs leading-5 text-gray-500">{todo.extras.clone()}</p>
-            
-            <CompletedCheckbox todo=todo/>
-            
-            <button type="submit"              
+    <li class = "p-6 max-w-sm mx-auto bg-white rounded-xl shadow-lg flex items-center space-x-4">
+
+
+        <CompletedCheckbox todo=todo.clone()/>
+        
+        <p class="text-xl font-medium text-black">{todo.title.clone()}</p>
+        <p class="text-slate-500">{todo.extras.clone()}</p>
+        
+
+
+        <button type="submit"              
             hx-delete="todo/{id}"
             hx-target="closest li"
             hx-swap="delete outerHTML"
-            class = "border rounded bg-gray-100 hover:bg-gray-200"
+            class = "border rounded bg-gray-100 hover:bg-gray-200 w-auto"
             >"Remove"</button>
+        
         </li>
     };
 }

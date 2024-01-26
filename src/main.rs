@@ -43,13 +43,6 @@ async fn index(_req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
                     route="/add"
                     todos = all_todos
                 />
-                <button 
-                    hx-post = "/removeall"
-                    hx-target="#todos"
-                    hx-swap="innerHTML"
-                    class = "bg-red-500 hover:bg-red-600">
-                        Get rid of em all 
-                </button>
 
             </body>
         }
